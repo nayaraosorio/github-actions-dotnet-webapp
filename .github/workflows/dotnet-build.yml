@@ -1,0 +1,65 @@
+name: .NET Core Workflow
+
+on:
+  push:
+    branches:
+      - main  # Evento de push na branch main
+  schedule:
+    - cron: '0 * * * *'  # Executa a cada hora
+
+jobs:
+  build-on-push:
+    name: Build and Test on Push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3  # Action pré-existente para checkout do código
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3  # Action pré-existente para setup do .NET
+        with:
+          dotnet-version: '6.0.x'  # Especifica a versão do .NET
+
+      - name: Restore Dependencies
+        run: dotnet restore github4women/github4women.csproj  # Caminho específico para o arquivo .csproj
+
+      - name: Build Project
+        run: dotnet build github4women/github4women.csproj --no-restore  # Caminho específico para o arquivo .csproj
+
+      - name: Run Tests
+        run: dotnet test github4women/github4women.csproj --no-restore --verbosity normal  # Caminho específico para o arquivo .csproj
+
+      - name: Run Custom Script on Push
+        run: |
+          echo "Running custom script on push"
+          echo "Hello, this is a custom script for push event"
+          dotnet --info  # Mostra informações sobre o .NET instalado
+        working-directory: github4women  # Diretório onde está o .csproj
+
+  scheduled-build:
+    name: Scheduled Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3  # Action pré-existente para checkout do código
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3  # Action pré-existente para setup do .NET
+        with:
+          dotnet-version: '6.0.x'  # Especifica a versão do .NET
+
+      - name: Restore Dependencies
+        run: dotnet restore github4women/github4women.csproj  # Caminho específico para o arquivo .csproj
+
+      - name: Build Project
+        run: dotnet build github4women/github4women.csproj --no-restore  # Caminho específico para o arquivo .csproj
+
+      - name: Run Tests
+        run: dotnet test github4women/github4women.csproj --no-restore --verbosity normal  # Caminho específico para o arquivo .csproj
+
+      - name: Run Custom Script on Schedule
+        run: |
+          echo "Running custom script on schedule"
+          echo "This script runs every hour"
+          dotnet --version  # Mostra a versão do .NET instalada
+        working-directory: github4women  # Diretório onde está o .csproj
